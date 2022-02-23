@@ -1,10 +1,10 @@
-#ifndef moveBase_h
-#define movebase_h
+#ifndef move_base_h
+#define move_base_h
 void move_base(double left, double right);
 #endif
 
-#ifndef moveBase_h
-#define movebase_h
+#ifndef reset_encoders_h
+#define reset_encoders_h
 void reset_encoders();
 #endif
 

@@ -1,6 +1,7 @@
 #include "main.h"
 #include "algos.h"
-#include "auton.h"
+#include "daniel_auton.h"
+#include "pranav_soph_auton.h"
 #include "drive.h"
 #include <math.h>
 
@@ -168,7 +169,7 @@ void opcontrol() {
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
 			Elev.move(127);
 		}
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
 			Elev.move(-127);
 		}
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){
