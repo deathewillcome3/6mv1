@@ -9,11 +9,17 @@ void travel2point(double t_pos [2], double speed){
 	pros::Motor MiddleL(19);
 	pros::Motor FrontL(20);
 	pros::Imu Inertial(15);
+  // pros::Gps gps1(24);
+  // pros::Gps gps2(23);
+  // pros::gps_status_s_t status;
   //Pos is in m, heading is neg ccw, pos cw in degrees
   double x_c_pos = 0;
   double y_c_pos = 0;
   double h_c = 0;
   while (abs(x_c_pos - t_pos[0]) > 0.3 || abs(y_c_pos - t_pos[1]) > 0.3){
+    // status1 = gps1.get_status();
+    // status2 = gps2.get_status();
+    // status1.yaw;
     //x_c_pos = get gps pos
     //y_c_pos = get gps pos
     //h_c = get gps heading (IN RADIANS)

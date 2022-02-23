@@ -102,6 +102,9 @@ void opcontrol() {
 	pros::ADIDigitalOut piston1('A');
 	pros::ADIDigitalOut piston2('B');
 	pros::Imu Inertial(15);
+	pros::Gps gps1(24);
+	pros::Gps gps2(23);
+	pros::c::gps_status_s_t status;
 	float arm_deg = 0;
 	Inertial.reset();
 	// pi_c flp;
@@ -129,18 +132,15 @@ void opcontrol() {
 		BackL.move(-1*leftMovement);
 		BackR.move(-1*rightMovement);
 
-		//*/
+		status = gps1.get_status();
+		pros::screen::print(TEXT_MEDIUM, 3, "gps yaw", status.yaw);
+		pros::screen::print(TEXT_MEDIUM, 4, "gps x", status.x);
+		pros::screen::print(TEXT_MEDIUM, 5, "gps y", status.y);
 
-		/*double leftM = a3;
-		double rightM = (-1)*a3;
-		FrontL.move(leftM);
-		FrontR.move(rightM);
-		
-		BackL.move(-1*leftM);
+        // pros::screen::print(TEXT_MEDIUM, 1, "x: %3f, y: %3f, pitch: %3f, status.x, status.y);
+        // pros::screen::print(TEXT_MEDIUM, 2, "yaw: %3f, roll: %3f", status.pitch, status.yaw);
+        // pros::screen::print(TEXT_MEDIUM, 3, "roll: %3f", status.roll);
 
-		BackR.move(-1*rightM);*/
-
-		
 		arm_deg = arm_deg + Arm1.get_actual_velocity()/600;
 		if(abs(master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y)) >= 6){
 			
