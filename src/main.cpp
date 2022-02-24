@@ -4,12 +4,13 @@
 #include "pranav_soph_auton.h"
 #include "drive.h"
 #include <math.h>
+#include <vector>
 
 
 // class pi_c{
 //   public:
 //     double p = 0.5;
-//     double i = 5;
+//     double i = 5;s
 //     double integral = 0;
 //     double previous_time = vex::timer::system();
 //     double update(double delta){
@@ -187,9 +188,9 @@ void opcontrol() {
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
 			daniel_auton();
 		}
-		// if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
-		// 	// autonomous7();
-		// }
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
+			pranav_soph_auton();
+		}
 		// if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
 		// 	// autonomous5();
 		// }
