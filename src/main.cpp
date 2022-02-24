@@ -37,6 +37,7 @@ void initialize() {
     pros::Motor FrontL (5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::Motor Arm1 (7, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::Motor Elev (8, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
+	//This is a test to see if commits work
 	pros::ADIDigitalOut piston1 ('A');
 	pros::ADIDigitalOut piston2 ( 'B' );
 // inertial Inertial= inertial(12);
