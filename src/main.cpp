@@ -29,16 +29,14 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::Motor BackR (20, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor MiddleR (19, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor FrontR (17, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor BackL (11, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor MiddleL (12, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor FrontL (13, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor Arm1 (1, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor Arm2 (5, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor ArmB (2, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor Elev (14, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor BackR (1, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    pros::Motor MiddleR (2, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    pros::Motor FrontR (3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    pros::Motor BackL (4, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    pros::Motor MiddleL (6, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    pros::Motor FrontL (5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor Arm1 (7, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor Elev (8, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::ADIDigitalOut piston1 ('A');
 	pros::ADIDigitalOut piston2 ( 'B' );
 // inertial Inertial= inertial(12);
@@ -90,22 +88,22 @@ void autonomous() {}
  */
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor BackL(11);
-	pros::Motor MiddleL(12);
-	pros::Motor FrontL(13);
-	pros::Motor BackR(20);
-	pros::Motor MiddleR(19);
-	pros::Motor FrontR(17);
-	pros::Motor Arm1(1);
+	pros::Motor BackL(4);
+	pros::Motor MiddleL(6);
+	pros::Motor FrontL(5);
+	pros::Motor BackR(1);
+	pros::Motor MiddleR(2);
+	pros::Motor FrontR(3);
+	pros::Motor Arm1(7);
 	pros::Motor Arm2(5);
-	pros::Motor ArmB(2);
-	pros::Motor Elev(14);
+	pros::Motor Elev(8);
 	pros::ADIDigitalOut piston1('A');
 	pros::ADIDigitalOut piston2('B');
 	pros::Imu Inertial(15);
-	pros::Gps gps1(24);
-	pros::Gps gps2(23);
+	pros::Gps gps1(15);
+	pros::Gps gps2(18);
 	pros::c::gps_status_s_t status;
+	pros::c::gps_status_s_t status1;
 	float arm_deg = 0;
 	Inertial.reset();
 	// pi_c flp;
@@ -113,8 +111,7 @@ void opcontrol() {
 	// pi_c blp;
 	// pi_c brp;
 	while (true) {
-		// Arm1.setVelocity(18, velocityUnits::pct);
-		// Arm2.setVelocity(18, velocityUnits::pct);
+		// Arm1.move_velocity(18);
 		double a4 = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
 		double a3 = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 		//a4 is the x coordinate
@@ -134,37 +131,40 @@ void opcontrol() {
 		BackR.move(-1*rightMovement);
 
 		status = gps1.get_status();
-		pros::screen::print(TEXT_MEDIUM, 3, "gps yaw", status.yaw);
-		pros::screen::print(TEXT_MEDIUM, 4, "gps x", status.x);
-		pros::screen::print(TEXT_MEDIUM, 5, "gps y", status.y);
 
-        // pros::screen::print(TEXT_MEDIUM, 1, "x: %3f, y: %3f, pitch: %3f, status.x, status.y);
-        // pros::screen::print(TEXT_MEDIUM, 2, "yaw: %3f, roll: %3f", status.pitch, status.yaw);
-        // pros::screen::print(TEXT_MEDIUM, 3, "roll: %3f", status.roll);
+		pros::screen::print(TEXT_MEDIUM, 1, "X Position: %3f", status.x);
+		pros::screen::print(TEXT_MEDIUM, 2, "Y Position: %3f", status.y);
+		pros::screen::print(TEXT_MEDIUM, 3, "Pitch: %3f", status.pitch);
+		pros::screen::print(TEXT_MEDIUM, 4, "Roll: %3f", status.roll);
+		pros::screen::print(TEXT_MEDIUM, 5, "Yaw: %3f", status.yaw);
 
+		
+		status1 = gps2.get_status();
+
+		pros::screen::print(TEXT_MEDIUM, 6, "X Position (2): %3f", status1.x);
+		pros::screen::print(TEXT_MEDIUM, 7, "Y Position (2): %3f", status1.y);
+		pros::screen::print(TEXT_MEDIUM, 8, "Pitch (2): %3f", status1.pitch);
+		pros::screen::print(TEXT_MEDIUM, 9, "Roll (2): %3f", status1.roll);
+		pros::screen::print(TEXT_MEDIUM, 10, "Yaw (2): %3f", status1.yaw);
+	
 		arm_deg = arm_deg + Arm1.get_actual_velocity()/600;
 		if(abs(master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y)) >= 6){
 			
 			if (master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) > 0 && arm_deg > 60){
 				Arm1.move(0);
-				Arm2.move(0);
 			}
 			Arm1.move(master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
-			Arm2.move(master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
 		}
-		else{
+		else {
 			Arm1.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-			Arm2.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-		}	
+			Arm1.move_velocity(0);
+		}
+
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
-			ArmB.move(127);
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
-			ArmB.move(-127);
 		}
 		else{
-			ArmB.move(0);
-			ArmB.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 		}
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
 			Elev.move(127);
@@ -184,7 +184,7 @@ void opcontrol() {
 			piston2.set_value(false);
 		} 
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
-			rotate(90);
+			daniel_auton();
 		}
 		// if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
 		// 	// autonomous7();
