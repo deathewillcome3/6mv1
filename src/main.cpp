@@ -39,8 +39,9 @@ void initialize() {
 	pros::Motor Arm1 (7, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::Motor Elev (8, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
 	//This is a test to see if commits work
-	pros::ADIDigitalOut piston1 ('A');
-	pros::ADIDigitalOut piston2 ( 'B' );
+	pros::ADIDigitalOut piston1('A');
+	pros::ADIDigitalOut piston2('B');
+	pros::ADIDigitalOut piston3('C');
 // inertial Inertial= inertial(12);
 }
 
@@ -101,6 +102,7 @@ void opcontrol() {
 	pros::Motor Elev(8);
 	pros::ADIDigitalOut piston1('A');
 	pros::ADIDigitalOut piston2('B');
+	pros::ADIDigitalOut piston3('C');
 	pros::Imu Inertial(15);
 	pros::Gps gps1(15);
 	pros::Gps gps2(18);
@@ -114,8 +116,20 @@ void opcontrol() {
 	// pi_c brp;
 	while (true) {
 		// Arm1.move_velocity(18);
-		double a4 = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
-		double a3 = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+		double a4 ;
+		double a3 ;
+		if (a4 < 63.5 && a4 > -63.5){
+			a4 = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)*2;
+		}
+		else {
+			a4 = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X) ;
+		}
+		if (a3 < 63.5 && a3 > -63.5){
+			a3 = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) * 2;
+		}
+		else{
+			a3 = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) ;
+		}
 		//a4 is the x coordinate
 		//a3 is the y coordinate
 	
@@ -163,30 +177,36 @@ void opcontrol() {
 		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
+			piston2.set_value(false);
+			piston3.set_value(false);
+
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
+			piston2.set_value(true);
+			piston3.set_value(true);
 		}
 		else{
 		}
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
-			Elev.move(127);
+			piston1.set_value(true);
 		}
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
-			Elev.move(-127);
+			piston1.set_value(false);
 		}
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){
 			Elev.move(0);
 		}
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)){
-			piston1.set_value(true);
-			piston2.set_value(true);
+			daniel_auton();
 		} 
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)){
 			piston1.set_value(false);
-			piston2.set_value(false);
 		} 
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
-			daniel_auton();
+			Elev.move(127);
+		}
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
+			Elev.move(-127);
 		}
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
 			pranav_soph_auton();

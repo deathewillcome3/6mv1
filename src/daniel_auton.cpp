@@ -3,19 +3,145 @@
 #include "drive.h"
 #include "algos.h"
 
+double targetAngle;
+double targetX;
+double enablePID = true;
+
 void daniel_auton (){
-    pros::Task bill_nye(pid_loop);
-    rotate(90);
+    pros::Task bill_nye(pid_loop_x);
+    targetAngle = 0;
+    targetX = 0.3;
     
 }
 
-int pid_loop (){
-    // while(enablePID){
+int pid_loop_x (){
+    pros::Motor BackR(11);
+    pros::Motor MiddleR(12);
+    pros::Motor FrontR(13);
+    pros::Motor BackL(18);
+    pros::Motor MiddleL(19);
+    pros::Motor FrontL(20);
+    pros::Imu Inertial(15);
+    pros::c::gps_status_s_t status;
 
-    //     pros::Task::delay(20);
-    // }
-    return 1;
+    double lat_integral = 0 ;
+    double lat_deriv = 0 ;
+    double lat_error = 0;
+    double lat_last_error = 0;
 
+    double ang_integral = 0 ;
+    double ang_deriv = 0 ;
+    double ang_error = 0;
+    double ang_last_error = 0;
+   
+    double kP=0.2;
+    int iter = 0;
+    double kI = 0.045;
+    double kD=0.035;
+   
+    while(enablePID){
+      status = get_gps_heading();
+      
+      lat_error = targetX - status.x;
+      //calculate lat_integral
+      lat_integral = lat_integral + lat_error * 0.02;
+      //calculate ang_derivative
+      lat_deriv = (lat_deriv - lat_last_error)/0.02;
+      // if(abs(error) == 0 ){ integral = 0; }
+      // if(integral > 0.5){ integral = 0.5; }
+      double lat_power = (lat_error*kP + lat_integral*kI + lat_integral*kD)*100;
+      
+      
+      ang_error = targetAngle - status.yaw;
+      //calculate ang_integral
+      ang_integral = ang_integral + ang_error * 0.02;
+      //calculate ang_derivative
+      ang_deriv = (ang_error - ang_last_error)/0.02;
+      if(abs(ang_error) == 0 ){ ang_integral = 0; }
+      if(ang_integral > 0.5){ ang_integral = 0.5; }
+      double ang_power = (ang_error*kP + ang_integral*kI + ang_deriv*kD)*100;
+
+      move_base(lat_power + ang_power, lat_power - ang_power);
+
+      ang_last_error = ang_error;
+      lat_last_error = lat_error;
+
+      pros::delay(20);
+
+  }
+
+  FrontL.move_voltage(0); 
+  MiddleL.move_voltage(0);
+  BackL.move_voltage(0); 
+  FrontR.move_voltage(0);
+  MiddleR.move_voltage(0);
+  BackR.move_voltage(0);
+  return 1;
+}
+
+int pid_loop_y (){
+    pros::Motor BackR(11);
+    pros::Motor MiddleR(12);
+    pros::Motor FrontR(13);
+    pros::Motor BackL(18);
+    pros::Motor MiddleL(19);
+    pros::Motor FrontL(20);
+    pros::Imu Inertial(15);
+    pros::c::gps_status_s_t status;
+
+    double lat_integral = 0 ;
+    double lat_deriv = 0 ;
+    double lat_error = 0;
+    double lat_last_error = 0;
+
+    double ang_integral = 0 ;
+    double ang_deriv = 0 ;
+    double ang_error = 0;
+    double ang_last_error = 0;
+   
+    double kP=0.2;
+    int iter = 0;
+    double kI = 0.045;
+    double kD=0.035;
+   
+    while(enablePID){
+      status = get_gps_heading();
+      
+      lat_error = targetX - status.y;
+      //calculate lat_integral
+      lat_integral = lat_integral + lat_error * 0.02;
+      //calculate ang_derivative
+      lat_deriv = (lat_deriv - lat_last_error)/0.02;
+      // if(abs(error) == 0 ){ integral = 0; }
+      // if(integral > 0.5){ integral = 0.5; }
+      double lat_power = (lat_error*kP + lat_integral*kI + lat_integral*kD)*100;
+      
+      
+      ang_error = targetAngle - status.yaw;
+      //calculate ang_integral
+      ang_integral = ang_integral + ang_error * 0.02;
+      //calculate ang_derivative
+      ang_deriv = (ang_error - ang_last_error)/0.02;
+      if(abs(ang_error) == 0 ){ ang_integral = 0; }
+      if(ang_integral > 0.5){ ang_integral = 0.5; }
+      double ang_power = (ang_error*kP + ang_integral*kI + ang_deriv*kD)*100;
+
+      move_base(lat_power + ang_power, lat_power - ang_power);
+
+      ang_last_error = ang_error;
+      lat_last_error = lat_error;
+
+      pros::delay(20);
+
+  }
+
+  FrontL.move_voltage(0); 
+  MiddleL.move_voltage(0);
+  BackL.move_voltage(0); 
+  FrontR.move_voltage(0);
+  MiddleR.move_voltage(0);
+  BackR.move_voltage(0);
+  return 1;
 }
 
 void travel2point(double t_pos [2], double speed){
@@ -27,12 +153,12 @@ void travel2point(double t_pos [2], double speed){
 	pros::Motor FrontL(20);
 	pros::Imu Inertial(15);
   pros::c::gps_status_s_t status;
-  status = get_gps_heading();
   //Pos is in m, heading is neg ccw, pos cw in degrees
   double x_c_pos = 0;
   double y_c_pos = 0;
   double h_c = 0;
   while (abs(x_c_pos - t_pos[0]) > 0.3 || abs(y_c_pos - t_pos[1]) > 0.3){
+    status = get_gps_heading();
     x_c_pos = status.x;
     y_c_pos = status.y;
     h_c = status.yaw * (3.1415/180);
