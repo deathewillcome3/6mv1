@@ -23,3 +23,12 @@ void travel2point(double t_pos [2], double speed);
 #define turn2point_H
 void turn2point(double target [2]);
 #endif
+
+// FrontL               motor         8               
+// FrontR               motor         6               
+// BackL                motor         4               
+// BackR                motor         13              
+// Ring                 motor         11              
+// FrontArm             motor         15              
+// Gyro                 inertial      5               
+// Clamp                motor         19   

@@ -30,17 +30,22 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::Motor BackR (1, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor MiddleR (2, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor FrontR (3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor FrontL (8, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    pros::Motor FrontR (6, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
     pros::Motor BackL (4, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor MiddleL (6, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor FrontL (5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor Arm1 (7, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor Elev (8, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
+    pros::Motor BackR (13, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	// pros::Motor BackR (1, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    // pros::Motor MiddleR (2, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    // pros::Motor FrontR (3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    // pros::Motor BackL (4, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    // pros::Motor MiddleL (6, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    // pros::Motor FrontL (5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	// pros::Motor Arm1 (7, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
+	// pros::Motor Elev (8, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
 	//This is a test to see if commits work
 	pros::ADIDigitalOut piston1('A');
 	pros::ADIDigitalOut piston2('B');
+	pros::IMU Inertial(5);
 	pros::ADIDigitalOut piston3('C');
 // inertial Inertial= inertial(12);
 }
@@ -99,7 +104,8 @@ void opcontrol() {
 	pros::Motor FrontR(3);
 	pros::Motor Arm1(7);
 	pros::Motor Arm2(5);
-	pros::Motor Elev(8);
+	// pros::Motor Elev(8);
+	pros::Motor Elev(9);
 	pros::ADIDigitalOut piston1('A');
 	pros::ADIDigitalOut piston2('B');
 	pros::ADIDigitalOut piston3('C');
@@ -138,30 +144,30 @@ void opcontrol() {
 		//except they turn opposite so multiply by -1
 		double rightMovement = a4-a3;
 
-		FrontL.move(leftMovement);
-		FrontR.move(rightMovement);
+		FrontL.move(-1*leftMovement);
+		FrontR.move(-1* rightMovement);
 		//Back moters r literally just the negative of the front motors 
 		MiddleL.move(-1*leftMovement);
 		MiddleR.move(-1*rightMovement);
 		BackL.move(-1*leftMovement);
 		BackR.move(-1*rightMovement);
 
-		status = gps1.get_status();
+		// status = gps1.get_status();
 
-		pros::screen::print(TEXT_MEDIUM, 1, "X Position: %3f", status.x);
-		pros::screen::print(TEXT_MEDIUM, 2, "Y Position: %3f", status.y);
-		pros::screen::print(TEXT_MEDIUM, 3, "Pitch: %3f", status.pitch);
-		pros::screen::print(TEXT_MEDIUM, 4, "Roll: %3f", status.roll);
-		pros::screen::print(TEXT_MEDIUM, 5, "Yaw: %3f", status.yaw);
+		// pros::screen::print(TEXT_MEDIUM, 1, "X Position: %3f", status.x);
+		// pros::screen::print(TEXT_MEDIUM, 2, "Y Position: %3f", status.y);
+		// pros::screen::print(TEXT_MEDIUM, 3, "Pitch: %3f", status.pitch);
+		// pros::screen::print(TEXT_MEDIUM, 4, "Roll: %3f", status.roll);
+		// pros::screen::print(TEXT_MEDIUM, 5, "Yaw: %3f", status.yaw);
 
 		
-		status1 = gps2.get_status();
+		// status1 = gps2.get_status();
 
-		pros::screen::print(TEXT_MEDIUM, 6, "X Position (2): %3f", status1.x);
-		pros::screen::print(TEXT_MEDIUM, 7, "Y Position (2): %3f", status1.y);
-		pros::screen::print(TEXT_MEDIUM, 8, "Pitch (2): %3f", status1.pitch);
-		pros::screen::print(TEXT_MEDIUM, 9, "Roll (2): %3f", status1.roll);
-		pros::screen::print(TEXT_MEDIUM, 10, "Yaw (2): %3f", status1.yaw);
+		// pros::screen::print(TEXT_MEDIUM, 6, "X Position (2): %3f", status1.x);
+		// pros::screen::print(TEXT_MEDIUM, 7, "Y Position (2): %3f", status1.y);
+		// pros::screen::print(TEXT_MEDIUM, 8, "Pitch (2): %3f", status1.pitch);
+		// pros::screen::print(TEXT_MEDIUM, 9, "Roll (2): %3f", status1.roll);
+		// pros::screen::print(TEXT_MEDIUM, 10, "Yaw (2): %3f", status1.yaw);
 	
 		arm_deg = arm_deg + Arm1.get_actual_velocity()/600;
 		if(abs(master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y)) >= 6){

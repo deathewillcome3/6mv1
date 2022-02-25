@@ -19,32 +19,43 @@ void move_base(double left, double right){
 }
 
 double average_encoders(){
-    pros::Motor BackL(11);
-	pros::Motor MiddleL(12);
-	pros::Motor FrontL(13);
-	pros::Motor BackR(20);
-	pros::Motor MiddleR(19);
-	pros::Motor FrontR(17);
-    return (fabs(BackL.get_position()) +
-            fabs(MiddleL.get_position()) +
+	pros::Motor FrontL(8);
+    pros::Motor FrontR(6);
+    pros::Motor BackL(4);
+    pros::Motor BackR(13);
+
+    // pros::Motor BackL(11);
+	// pros::Motor MiddleL(12);
+	// pros::Motor FrontL(13);
+	// pros::Motor BackR(20);
+	// pros::Motor MiddleR(19);
+	// pros::Motor FrontR(17);
+    // fabs(MiddleL.get_position()) +
+	//fabs(MiddleR.get_position()) +
+	return (fabs(BackL.get_position()) +
+            
             fabs(FrontL.get_position()) +
             fabs(BackR.get_position()) +
-            fabs(MiddleR.get_position()) +
-            fabs(FrontR.get_position()) ) / 6;
+            fabs(FrontR.get_position()) ) / 4;
 }    
 
 void reset_encoders(){
-	pros::Motor BackL(11);
-	pros::Motor MiddleL(12);
-	pros::Motor FrontL(13);
-	pros::Motor BackR(20);
-	pros::Motor MiddleR(19);
-	pros::Motor FrontR(17);
+	pros::Motor FrontL(8);
+    pros::Motor FrontR(6);
+    pros::Motor BackL(4);
+    pros::Motor BackR(13);
+
+	// pros::Motor BackL(11);
+	// pros::Motor MiddleL(12);
+	// pros::Motor FrontL(13);
+	// pros::Motor BackR(20);
+	// pros::Motor MiddleR(19);
+	// pros::Motor FrontR(17);
     BackL.tare_position();
-    MiddleL.tare_position();
+    // MiddleL.tare_position();
     FrontL.tare_position();
     BackR.tare_position();
-    MiddleR.tare_position();
+    // MiddleR.tare_position();
     FrontR.tare_position();
 }
 
