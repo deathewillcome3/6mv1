@@ -18,3 +18,49 @@ void neutral_auton();
 #define pranav_soph_auton_H
 void pranav_soph_auton();
 #endif
+
+
+#ifndef clampF_h
+#define clampF_h
+void clampF();
+#endif
+
+#ifndef clampB_h
+#define clampB_h
+void clampB();
+#endif
+
+
+#ifndef unclampF_h
+#define unclampF_h
+void unclampF();
+#endif
+
+#ifndef unclampB_h
+#define unclampB_h
+void unclampB();
+#endif
+
+#ifndef move_forward_h
+#define move_forward_h
+void move_forward(double d);
+#endif
+
+#ifndef move_backward_h
+#define move_backward_h
+void move_backward(double d);
+#endif
+
+
+#ifndef armUp_h
+#define armUp_h
+void armUp();
+#endif
+
+#ifndef armDown_h
+#define armDown_h
+void armDown();
+#endif
+
+
+
