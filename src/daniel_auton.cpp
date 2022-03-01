@@ -58,7 +58,8 @@ int pid_loop_x (){
     double kP = 1.5;
     int iter = 0;
     double kI = 0;
-    double kD= 0.75;
+    double kD= 1.5;
+   
    
     while(enablePID){
       // status = get_gps_heading();
@@ -84,6 +85,7 @@ int pid_loop_x (){
       // if(abs(ang_error) == 0 ){ ang_integral = 0; }
       // if(ang_integral > 0.5){ ang_integral = 0.5; }
       double ang_power = (ang_error*kP  + ang_deriv*kD);
+      // ang_power = 0;
       pros::screen::print(TEXT_MEDIUM, 2, "Angular Position: %3f", ang_error);
       float test = ang_error * 0.02;
       pros::screen::print(TEXT_MEDIUM, 3, "Angular Power: %3f", ang_power);
