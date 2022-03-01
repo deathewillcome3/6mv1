@@ -145,7 +145,7 @@ void opcontrol() {
 		double rightMovement = a4-a3;
 
 		FrontL.move(-1*leftMovement);
-		FrontR.move(-1* rightMovement);
+		FrontR.move(-1*rightMovement);
 		//Back moters r literally just the negative of the front motors 
 		MiddleL.move(-1*leftMovement);
 		MiddleR.move(-1*rightMovement);
