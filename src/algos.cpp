@@ -1,14 +1,19 @@
 #include "main.h"
 #include "algos.h"
+#include "globals.h"
 #include <vector>
 #include <cmath>
 
 double getTheta(double target [2]){
   double pos [2] = {0,0};
   double h_c = 0;
+  pros::c::gps_status_s_t gps_heading;
   // pos[0] from gps
+  pos[0] = gps_heading.x;
   // pos[1] from gps
+  pos[1] = gps_heading.y;
   // h_c from gps (heading)
+  h_c = gps_heading.yaw;
   double point_vec [2] = {target[0] - pos[0], target[1] - pos[1]};
   double pv_mag = pow( pow(point_vec[0], 2) + pow(point_vec[1], 2), 0.5);
   point_vec[0] = point_vec[0] / pv_mag;
@@ -58,12 +63,10 @@ pros::c::gps_status_s_t get_gps_heading(){
   // 1.5 inches from the center Y left GPS 
   // 1.5 inches from the center Y Right GPS
   // 7.5 inches from the center X Right GPS 
-  pros::Gps gps(24);
-  pros::Gps gps1(23);
   pros::c::gps_status_s_t status;
   pros::c::gps_status_s_t status1;
-  status = gps.get_status();
-  status1 = gps1.get_status();
+  status = gps1.get_status();
+  status1 = gps2.get_status();
   if(status.x == 0 || status.y == 0 || status.yaw == 0 ){
     return status1;
   }

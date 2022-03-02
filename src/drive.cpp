@@ -7,10 +7,10 @@
 void move_base(double left, double right){
     BackL = -left;
     MiddleL = -left;
-    FrontL = left;
+    FrontL = -left;
     BackR = -right;
     MiddleR = -right;
-    FrontR = right;
+    FrontR = -right;
 }
 
 double average_encoders(){
@@ -24,10 +24,11 @@ double average_encoders(){
     // fabs(MiddleL.get_position()) +
 	//fabs(MiddleR.get_position()) +
 	return (fabs(BackL.get_position()) +
-            
+            fabs(MiddleL.get_position()) +
             fabs(FrontL.get_position()) +
             fabs(BackR.get_position()) +
-            fabs(FrontR.get_position()) ) / 4;
+			fabs(MiddleR.get_position()) +
+            fabs(FrontR.get_position()) ) / 6;
 }    
 
 void reset_encoders(){
@@ -38,10 +39,10 @@ void reset_encoders(){
 	// pros::Motor MiddleR(19);
 	// pros::Motor FrontR(17);
     BackL.tare_position();
-    // MiddleL.tare_position();
+    MiddleL.tare_position();
     FrontL.tare_position();
     BackR.tare_position();
-    // MiddleR.tare_position();
+    MiddleR.tare_position();
     FrontR.tare_position();
 }
 

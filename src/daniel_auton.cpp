@@ -51,7 +51,6 @@ int pid_loop_x (){
       pros::screen::print(TEXT_MEDIUM, 1, "Encoder Position: %3f", status.yaw);
 
       lat_error= targetX - status.x;
-      // lat_error = targetX - status.x;
       //calculate lat_integral
       lat_integral = lat_integral + lat_error * 0.02;
       //calculate ang_derivative
@@ -61,7 +60,6 @@ int pid_loop_x (){
       double lat_power = (lat_error*kP + lat_integral*kI + lat_integral*kD);
       
       ang_error = targetAngle - status.yaw;
-      // ang_error = targetAngle - status.yaw;
       //calculate ang_integral
       ang_integral = ang_integral + ang_error * 0.02;
       //calculate ang_derivative
@@ -69,10 +67,9 @@ int pid_loop_x (){
       // if(abs(ang_error) == 0 ){ ang_integral = 0; }
       // if(ang_integral > 0.5){ ang_integral = 0.5; }
       double ang_power = (ang_error*kP  + ang_deriv*kD);
-      // ang_power = 0;
       pros::screen::print(TEXT_MEDIUM, 2, "Angular Position: %3f", ang_error);
-      float test = ang_error * 0.02;
       pros::screen::print(TEXT_MEDIUM, 3, "Angular Power: %3f", ang_power);
+      
       // move_base(lat_power + ang_power, lat_power - ang_power);
 
       ang_last_error = ang_error;
@@ -87,11 +84,12 @@ int pid_loop_x (){
   }
 
   FrontL.move_voltage(0); 
-  // MiddleL.move_voltage(0);
+  MiddleL.move_voltage(0);
   BackL.move_voltage(0); 
   FrontR.move_voltage(0);
-  // MiddleR.move_voltage(0);
+  MiddleR.move_voltage(0);
   BackR.move_voltage(0);
+
   return 1;
 }
 

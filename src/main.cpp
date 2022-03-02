@@ -122,7 +122,7 @@ void opcontrol() {
 		BackL.move(-1*leftMovement);
 		BackR.move(-1*rightMovement);
 
-		status = gps1.get_status();
+		status = get_gps_heading();
 
 		pros::screen::print(TEXT_MEDIUM, 1, "X Position: %3f", status.x);
 		pros::screen::print(TEXT_MEDIUM, 2, "Y Position: %3f", status.y);
