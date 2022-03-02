@@ -2,18 +2,13 @@
 #include "daniel_auton.h"
 #include "drive.h"
 #include "algos.h"
+#include "globals.h"
 
 double targetAngle;
 double targetX;
 double enablePID = true;
 
 void daniel_auton (){
-  pros::Imu Inertial(5);
-  pros::Motor FrontL(8);
-  pros::Motor FrontR(6);
-  pros::Motor BackL(4);
-  pros::Motor BackR(13);
-
   Inertial.reset();
   // FrontL.move(-63);
   // FrontR.move(63);
@@ -32,18 +27,7 @@ void daniel_auton (){
 }
 
 int pid_loop_x (){
-    // pros::Motor BackR(11);
-    // pros::Motor MiddleR(12);
-    // pros::Motor FrontR(13);
-    // pros::Motor BackL(18);
-    // pros::Motor MiddleL(19);
-    // pros::Motor FrontL(20);
-    pros::Imu Inertial(5);
-    pros::Motor FrontL(8);
-    pros::Motor FrontR(6);
-    pros::Motor BackL(4);
-    pros::Motor BackR(13);
-    // pros::c::gps_status_s_t status;
+    pros::c::gps_status_s_t status;
 
     double lat_integral = 0 ;
     double lat_deriv = 0 ;
@@ -62,11 +46,11 @@ int pid_loop_x (){
    
    
     while(enablePID){
-      // status = get_gps_heading();
+      status = get_gps_heading();
 
-      pros::screen::print(TEXT_MEDIUM, 1, "Encoder Position: %3f", Inertial.get_yaw());
+      pros::screen::print(TEXT_MEDIUM, 1, "Encoder Position: %3f", status.yaw);
 
-      lat_error= targetX - average_encoders();
+      lat_error= targetX - status.x;
       // lat_error = targetX - status.x;
       //calculate lat_integral
       lat_integral = lat_integral + lat_error * 0.02;
@@ -76,7 +60,7 @@ int pid_loop_x (){
       // if(integral > 0.5){ integral = 0.5; }
       double lat_power = (lat_error*kP + lat_integral*kI + lat_integral*kD);
       
-      ang_error = targetAngle - Inertial.get_yaw();
+      ang_error = targetAngle - status.yaw;
       // ang_error = targetAngle - status.yaw;
       //calculate ang_integral
       ang_integral = ang_integral + ang_error * 0.02;
