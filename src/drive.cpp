@@ -1,15 +1,10 @@
 #include "main.h"
 #include "drive.h"
+#include "algos.h"
+#include "globals.h"
 
-pros::Imu Inertial(15);
 
 void move_base(double left, double right){
-    pros::Motor BackL(11);
-	pros::Motor MiddleL(12);
-	pros::Motor FrontL(13);
-	pros::Motor BackR(20);
-	pros::Motor MiddleR(19);
-	pros::Motor FrontR(17);
     BackL = -left;
     MiddleL = -left;
     FrontL = left;
@@ -19,10 +14,6 @@ void move_base(double left, double right){
 }
 
 double average_encoders(){
-	pros::Motor FrontL(8);
-    pros::Motor FrontR(6);
-    pros::Motor BackL(4);
-    pros::Motor BackR(13);
 
     // pros::Motor BackL(11);
 	// pros::Motor MiddleL(12);
@@ -40,11 +31,6 @@ double average_encoders(){
 }    
 
 void reset_encoders(){
-	pros::Motor FrontL(8);
-    pros::Motor FrontR(6);
-    pros::Motor BackL(4);
-    pros::Motor BackR(13);
-
 	// pros::Motor BackL(11);
 	// pros::Motor MiddleL(12);
 	// pros::Motor FrontL(13);
@@ -60,14 +46,8 @@ void reset_encoders(){
 }
 
 void rotate(double rotateAngle){
-	pros::Motor BackR(11);
-	pros::Motor MiddleR(12);
-	pros::Motor FrontR(13);
-	pros::Motor BackL(18);
-	pros::Motor MiddleL(19);
-	pros::Motor FrontL(20);
-	pros::Imu Inertial(15);
-	Inertial.tare_rotation();
+	pros::c::gps_status_s_t status = get_gps_heading();
+	// Inertial.tare_rotation();
 	double integral = 0 ;
 	double derivative = 0 ;
 	double error = 0;
@@ -76,12 +56,12 @@ void rotate(double rotateAngle){
 	double kI = 0.045;
 	double kD=0.035;
 	double lastError = 0;
-	while( abs(Inertial.get_rotation()- rotateAngle ) > 0.5 ){
+	while( abs(status.yaw- rotateAngle ) > 0.5 ){
 		iter++;
 		if(iter >= 50) {
 		break;
 		}
-		error = rotateAngle - Inertial.get_rotation();
+		error = rotateAngle - status.yaw;
 		//calculate integral
 		integral = integral + error * 0.02;
 		//calculate derivative

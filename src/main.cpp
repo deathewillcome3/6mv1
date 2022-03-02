@@ -3,6 +3,7 @@
 #include "daniel_auton.h"
 #include "pranav_soph_auton.h"
 #include "drive.h"
+#include "globals.h"
 #include <math.h>
 #include <vector>
 
@@ -30,24 +31,12 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::Motor FrontL (8, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor FrontR (6, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor BackL (4, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    pros::Motor BackR (13, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-	// pros::Motor BackR (1, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    // pros::Motor MiddleR (2, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    // pros::Motor FrontR (3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	// pros::Motor FrontL (8, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+    // pros::Motor FrontR (6, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
     // pros::Motor BackL (4, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    // pros::Motor MiddleL (6, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-    // pros::Motor FrontL (5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-	// pros::Motor Arm1 (7, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
-	// pros::Motor Elev (8, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
-	//This is a test to see if commits work
-	pros::ADIDigitalOut piston1('A');
-	pros::ADIDigitalOut piston2('B');
-	pros::IMU Inertial(5);
-	pros::ADIDigitalOut piston3('C');
-// inertial Inertial= inertial(12);
+    // pros::Motor BackR (13, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Imu Inertial(15);
+	Inertial.reset();
 }
 
 /**
@@ -79,7 +68,9 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -95,31 +86,10 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor BackL(4);
-	pros::Motor MiddleL(6);
-	pros::Motor FrontL(5);
-	pros::Motor BackR(1);
-	pros::Motor MiddleR(2);
-	pros::Motor FrontR(3);
-	pros::Motor Arm1(7);
-	pros::Motor Arm2(5);
-	// pros::Motor Elev(8);
-	pros::Motor Elev(9);
-	pros::ADIDigitalOut piston1('A');
-	pros::ADIDigitalOut piston2('B');
-	pros::ADIDigitalOut piston3('C');
-	pros::Imu Inertial(15);
-	pros::Gps gps1(15);
-	pros::Gps gps2(18);
 	pros::c::gps_status_s_t status;
 	pros::c::gps_status_s_t status1;
 	float arm_deg = 0;
-	Inertial.reset();
-	// pi_c flp;
-	// pi_c frp;
-	// pi_c blp;
-	// pi_c brp;
+	Elev.move(-100);
 	while (true) {
 		// Arm1.move_velocity(18);
 		double a4 ;
@@ -183,22 +153,22 @@ void opcontrol() {
 		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
-			piston2.set_value(false);
-			piston3.set_value(false);
+			pistonB1.set_value(false);
+			pistonB2.set_value(false);
 
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
-			piston2.set_value(true);
-			piston3.set_value(true);
+			pistonB1.set_value(true);
+			pistonB2.set_value(true);
 		}
 		else{
 		}
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
-			piston1.set_value(false);
+			pistonF.set_value(false);
 
 		}
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
-			piston1.set_value(true);
+			pistonF.set_value(true);
 
 		}
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){
@@ -208,13 +178,13 @@ void opcontrol() {
 			daniel_auton();
 		} 
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)){
-			piston1.set_value(false);
+			pistonF.set_value(false);
 		} 
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
-			Elev.move(127);
+			// Elev.move(12000);
 		}
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
-			Elev.move(-127);
+			Elev.move(127);
 		}
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
 			pranav_soph_auton();

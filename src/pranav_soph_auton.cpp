@@ -2,7 +2,7 @@
 #include "pranav_soph_auton.h"
 #include "drive.h"
 #include "algos.h"
-
+#include "globals.h"
 
 //amt of time it takes to move 1 tile (not correct right now)
 double unit = 1;
@@ -10,25 +10,6 @@ double arm_degrees = 1;
 
 //I think this is gonna be a left auton
 void pranav_soph_auton (){
-
-    //Initializing? - copied from the main "opcontrol" function
-
-    //controller unecessary 
-    //pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor BackL(4);
-	pros::Motor MiddleL(6);
-	pros::Motor FrontL(5);
-	pros::Motor BackR(1);
-	pros::Motor MiddleR(2);
-	pros::Motor FrontR(3);
-	pros::Motor Arm1(7);
-	//pros::Motor Arm2(5);
-	pros::Motor Elev(8); //apprently the rings motor according to danny lmao
-	pros::ADIDigitalOut pistonF('A');
-	pros::ADIDigitalOut pistonB1('B');
-    pros::ADIDigitalOut pistonB2('C');
-
-    //initiliaze the pistons as well ig
 
     
     left_auton();
@@ -50,22 +31,6 @@ void left_auton (){
     //**ANGLE MEASUREMENTS + DRIVE LENGTHS SHOULD BE CHECKED**
     //**CUZ IDK WHAT IM DOING LMFAO**
     //**SO THE CURRENT MAX ARM ANGLE IS 60 AND IM ESTIMATING AN ANGLE OF 35 ON THE BALANCES**
-
-    //initializing cuz this is dumb
-    pros::Motor BackL(4);
-	pros::Motor MiddleL(6);
-	pros::Motor FrontL(5);
-	pros::Motor BackR(1);
-	pros::Motor MiddleR(2);
-	pros::Motor FrontR(3);
-	pros::Motor Arm1(7);
-	//pros::Motor Arm2(5);
-	pros::Motor Elev(8); //apprently the rings motor according to danny lmao
-	pros::ADIDigitalOut pistonF('A');
-	pros::ADIDigitalOut pistonB1('B');
-    pros::ADIDigitalOut pistonB2('C');
-
-    //initiliaze the pistons as well ig
     
 
     //resetting to 0 iDK mAN
@@ -199,12 +164,10 @@ void neutral_auton (){
 
 
 void armUp(){
-    pros::Motor Arm1(7);
     Arm1.move(120*arm_degrees);
 }
 
 void armDown(){
-    pros::Motor Arm1(7);
     Arm1.move(-120*arm_degrees);
 }
 
@@ -225,29 +188,17 @@ go backwards
 
 
 void clampF(){
-    pros::ADIDigitalOut pistonF('A');
-	pros::ADIDigitalOut pistonB1('B');
-    pros::ADIDigitalOut pistonB2('C');
     pistonF.set_value(true);
 }
 void clampB(){
-    pros::ADIDigitalOut pistonF('A');
-	pros::ADIDigitalOut pistonB1('B');
-    pros::ADIDigitalOut pistonB2('C');
     pistonB1.set_value(false);
     pistonB2.set_value(false);
 }
 
 void unclampF(){
-    pros::ADIDigitalOut pistonF('A');
-	pros::ADIDigitalOut pistonB1('B');
-    pros::ADIDigitalOut pistonB2('C');
     pistonF.set_value(false);
 }
 void unclampB(){
-    pros::ADIDigitalOut pistonF('A');
-	pros::ADIDigitalOut pistonB1('B');
-    pros::ADIDigitalOut pistonB2('C');
     pistonB1.set_value(true);
     pistonB2.set_value(true);
 }
