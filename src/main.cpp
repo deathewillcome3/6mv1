@@ -122,7 +122,8 @@ void opcontrol() {
 		BackL.move(-1*leftMovement);
 		BackR.move(-1*rightMovement);
 
-		status = get_gps_heading();
+		// status = get_gps_heading();
+		status = gps1.get_status();
 
 		pros::screen::print(TEXT_MEDIUM, 1, "X Position: %3f", status.x);
 		pros::screen::print(TEXT_MEDIUM, 2, "Y Position: %3f", status.y);
@@ -130,6 +131,7 @@ void opcontrol() {
 		pros::screen::print(TEXT_MEDIUM, 4, "Roll: %3f", status.roll);
 		pros::screen::print(TEXT_MEDIUM, 5, "Yaw: %3f", status.yaw);
 
+		//deadzone is about a foot
 		
 		status1 = gps2.get_status();
 
