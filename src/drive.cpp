@@ -116,21 +116,21 @@ void reset_encoders(){
 void rotate(double rotateAngle){
 	
 	pros::c::gps_status_s_t status = get_gps_heading();
-	pros::c::gps_status_s_t status_acc = gps2.get_status();
+	pros::c::gps_status_s_t status_acc = gps1.get_status();
 	// Inertial.tare_rotation();
 
 	double integral = 0 ;
 	double derivative = 0 ;
 	double error = 0;
-	double kP=0.2;
+	double kP=5.75;
 	int iter = 0;
-	double kI = 0.045;
-	double kD=0.035;
+	double kI = 0.5;
+	double kD=0.75;
 	double lastError = 0;
 	double targetAngle = status_acc.yaw + rotateAngle;
-
-	while( abs(status_acc.yaw- rotateAngle ) > 0.5 ){
-		error = rotateAngle - status_acc.yaw;
+	while( abs(status_acc.yaw- targetAngle ) > 0.5 ){
+		status_acc = gps1.get_status();
+		error = targetAngle - status_acc.yaw;
 		//calculate integral
 		integral = integral + error * 0.02;
 		//calculate derivative

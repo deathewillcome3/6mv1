@@ -8,16 +8,16 @@ void daniel_auton();
 int pid_loop_x();
 #endif
 
+#ifndef pid_loop_gps_h
+#define pid_loop_gps_h
+int pid_loop_gps();
+#endif
 
 #ifndef pid_loop_h_1
 #define pid_loop_h_1
 int pid_loop_y();
 #endif
 
-#ifndef travel2point_h
-#define travel2point_h
-void travel2point(double t_pos [2], double speed);
-#endif
 
 #ifndef turn2point_h
 #define turn2point_H

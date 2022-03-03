@@ -8,6 +8,7 @@ double getTheta(double target [2]){
   double pos [2] = {0,0};
   double h_c = 0;
   pros::c::gps_status_s_t gps_heading;
+  gps_heading = gps1.get_status();
   // pos[0] from gps
   pos[0] = gps_heading.x;
   // pos[1] from gps
@@ -83,7 +84,9 @@ void travel2point(double t_pos [2], double speed){
   double y_c_pos = 0;
   double h_c = 0;
   pros::c::gps_status_s_t gps_heading;
+  gps_heading = gps1.get_status();
   while (abs(x_c_pos - t_pos[0]) > 0.3 || abs(y_c_pos - t_pos[1]) > 0.3){
+    gps_heading = gps1.get_status();
     // pos[0] from gps
     pos[0] = gps_heading.x;
     // pos[1] from gps
