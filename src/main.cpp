@@ -187,7 +187,7 @@ void opcontrol() {
 			Elev.move(127);
 		}
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
-			left_auton_sop();
+			pranav_soph_auton();
 		}
 		// if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
 		// 	// autonomous5();

@@ -3,6 +3,11 @@
 void move_base(double left, double right);
 #endif
 
+#ifndef move_good_h
+#define move_good_h
+void move_good(double rev);
+#endif
+
 #ifndef reset_encoders_h
 #define reset_encoders_h
 void reset_encoders();

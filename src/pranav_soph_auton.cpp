@@ -10,10 +10,18 @@ double arm_degrees = 1;
 
 //I think this is gonna be a left auton
 void pranav_soph_auton (){
+    move_base(-100,100);
+    pros::delay(1);
+    clampB;
+    move_base(100,100);
+    pros::delay(1);
 
-    move_forward(1);
+
+ //move_forward(1);
+
+    //move_forward(1);
     
-    left_auton_sop();
+    //left_auton_sop();
 
 }
 
@@ -55,70 +63,7 @@ try to stack one of the blue goals?
 
 void left_auton_sop(){
     
-    //Testing:
-    //basic test movement
-
-    //resetting to 0 iDK mAN
-    // move_base(0,0); //imma just assume i s+-hould keep this
-    // Arm1.move(0);
-
-
-    //unclamped
-    pistonF.set_value(false);
-    pistonB1.set_value(false);
-    pistonB2.set_value(false);
-
-
-    move_forward(1);
-
-    // move_forward(-1);
-
-
-    // move_backward(1);
-    // move_backward(-11);
-
-
-    // clampB();
-    // unclampB();
-
-    // clampF();
-    // unclampF();
     
-    
-    // rotate(90);
-    // rotate(-90);
-
-    // armUp();
-    // armDown();
-
-    
-    /*
-    //Sop's code attempt
-    //varun is here too
-    //clamping blue tower 
-    move_backward(1);
-
-    clampB();
-    //goes off the ramp
-    //might be unecessary depending on what happens when we test
-    move_forward(0.5);
-
-
-    //Turning right without rotating in place
-    //rotating in place would cause the mobile base to hit
-    move_base(100, 0);
-    //front clamp faces yellow tower
-    //and we just pray it lines up even though it won't
-    //I think we just have to adjust it when we test HNNGGHHH
-
-    move_forward(3.5);
-    clampF();
-    armUp();
-    
-    //want to stack on balance
-    //these are literally random values
-    rotate(45);
-    move_forward(2.5);*/
 }
 
 
@@ -185,11 +130,14 @@ void unclampB(){
 
 //movement helper functions
 //that don't do anything
-void move_forward(double tile){
-    double time = tile*unit*1000;
-    move_base(100, 100);
+void move_forward(double inp){
+    //currently testing the 
+    double time = inp*1000;
+    move_base(100,100);
     pros::delay(time);
     move_base(0,0);
+
+    //
 }
 
 void move_backward(double tile){
@@ -347,3 +295,74 @@ void left_auton_pranav(){
     //*/
 
 }
+
+/*
+void left_auton_sop(){
+    
+    //Testing:
+    //basic test movement
+
+    //resetting to 0 iDK mAN
+    // move_base(0,0); //imma just assume i s+-hould keep this
+    // Arm1.move(0);
+
+
+    //unclamped 
+    /*
+    pistonF.set_value(false);
+    pistonB1.set_value(false);
+    pistonB2.set_value(false);
+    //*/
+
+
+    
+
+    // move_forward(-1);
+
+
+    // move_backward(1);
+    // move_backward(-11);
+
+
+    // clampB();
+    // unclampB();
+
+    // clampF();
+    // unclampF();
+    
+    
+    // rotate(90);
+    // rotate(-90);
+
+    // armUp();
+    // armDown();
+
+    
+    /*
+    //Sop's code attempt
+    //varun is here too
+    //clamping blue tower 
+    move_backward(1);
+
+    clampB();
+    //goes off the ramp
+    //might be unecessary depending on what happens when we test
+    move_forward(0.5);
+
+
+    //Turning right without rotating in place
+    //rotating in place would cause the mobile base to hit
+    move_base(100, 0);
+    //front clamp faces yellow tower
+    //and we just pray it lines up even though it won't
+    //I think we just have to adjust it when we test HNNGGHHH
+
+    move_forward(3.5);
+    clampF();
+    armUp();
+    
+    //want to stack on balance
+    //these are literally random values
+    rotate(45);
+    move_forward(2.5);*/
+//}

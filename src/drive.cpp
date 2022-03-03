@@ -20,6 +20,66 @@ void move_base(double left, double right){
     FrontR = right;
 }
 
+void move_good(double revolutions){
+    // BackL = -left;
+    // MiddleL = -left;
+    // FrontL = -left;
+    // BackR = -right;
+    // MiddleR = -right;
+    // FrontR = -right;
+
+	// BackL.move_relative(-300*revolutions,600);
+	// MiddleL.move_relative(-300*revolutions,600);
+	// FrontL.move_relative(-300*revolutions,600);
+	// BackR.move_relative(300*revolutions,600);
+	// MiddleR.move_relative(300*revolutions,600);
+	// FrontR.move_relative(300*revolutions,600);
+
+
+	BackL.move_relative(100,100);
+	while (!((BackL.get_position() < -300*revolutions+5) && (BackL.get_position() > -300*revolutions-5))) {
+    // Continue running this loop as long as the motor is not within +-5 units of its goal
+    pros::delay(10);
+	}
+	MiddleL.move_relative(100,100);
+	FrontL.move_relative(100,100);
+	BackR.move_relative(-100, 100);
+	MiddleR.move_relative(-100, 100);
+	FrontR.move_relative(-100, 100);
+
+	
+
+	/*
+	while (!((MiddleL.get_position() < -300*revolutions+5) && (MiddleL.get_position() > -300*revolutions-5))) {
+    // Continue running this loop as long as the motor is not within +-5 units of its goal
+    pros::delay(10);
+	}
+	while (!((FrontL.get_position() < -300*revolutions+5) && (FrontL.get_position() > -300*revolutions-5))) {
+    // Continue running this loop as long as the motor is not within +-5 units of its goal
+    pros::delay(10);
+	}
+
+
+
+
+
+	while (!((BackR.get_position() < 300*revolutions+5) && (BackR.get_position() > 300*revolutions-5))) {
+    // Continue running this loop as long as the motor is not within +-5 units of its goal
+    pros::delay(10);
+	}
+
+	while (!((MiddleR.get_position() < 300*revolutions+5) && (MiddleR.get_position() > 300*revolutions-5))) {
+    // Continue running this loop as long as the motor is not within +-5 units of its goal
+    pros::delay(10);
+	}
+	while (!((FrontR.get_position() < 300*revolutions+5) && (FrontR.get_position() > 300*revolutions-5))) {
+    // Continue running this loop as long as the motor is not within +-5 units of its goal
+    pros::delay(10);
+	}
+	//*/
+	
+}
+
 double average_encoders(){
 
     // pros::Motor BackL(11);
