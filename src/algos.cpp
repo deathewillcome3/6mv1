@@ -115,13 +115,17 @@ void travel2point(double t_pos [2], double speed){
     prop_cmd[0] = prop_cmd[0] * speed / prop_mag;
     prop_cmd[1] = prop_cmd[1] * speed / prop_mag;
 
-    // FrontL.spin(directionType::fwd, (prop_cmd[0]), velocityUnits::pct); 
-    // FrontR.spin(directionType::fwd, (-1 * prop_cmd[1]), velocityUnits::pct);
-    // BackL.spin(directionType::fwd, (prop_cmd[0]), velocityUnits::pct); 
-    // BackR.spin(directionType::fwd, (-1 * prop_cmd[1]), velocityUnits::pct);
+    FrontL.move_velocity((-1 * prop_cmd[0])*6); 
+    MiddleL.move_velocity((-1 * prop_cmd[0])*6); 
+    BackL.move_velocity((-1 * prop_cmd[0])*6); 
+    FrontR.move_velocity((prop_cmd[1])*6); 
+    MiddleR.move_velocity((prop_cmd[1])*6); 
+    BackR.move_velocity((prop_cmd[1])*6); 
   }
-  // FrontL.spin(directionType::fwd, 0, velocityUnits::pct); 
-  // FrontR.spin(directionType::fwd, 0, velocityUnits::pct);
-  // BackL.spin(directionType::fwd, 0, velocityUnits::pct); 
-  // BackR.spin(directionType::fwd, 0, velocityUnits::pct);
+  FrontL.move_velocity(0); 
+  MiddleL.move_velocity(0); 
+  BackL.move_velocity(0); 
+  FrontR.move_velocity(0); 
+  MiddleR.move_velocity(0); 
+  BackR.move_velocity(0); 
 }

@@ -114,8 +114,11 @@ void reset_encoders(){
 }
 
 void rotate(double rotateAngle){
+	
 	pros::c::gps_status_s_t status = get_gps_heading();
+	pros::c::gps_status_s_t status_acc = gps2.get_status();
 	// Inertial.tare_rotation();
+
 	double integral = 0 ;
 	double derivative = 0 ;
 	double error = 0;
@@ -124,12 +127,10 @@ void rotate(double rotateAngle){
 	double kI = 0.045;
 	double kD=0.035;
 	double lastError = 0;
-	while( abs(status.yaw- rotateAngle ) > 0.5 ){
-		iter++;
-		if(iter >= 50) {
-		break;
-		}
-		error = rotateAngle - status.yaw;
+	double targetAngle = status_acc.yaw + rotateAngle;
+
+	while( abs(status_acc.yaw- rotateAngle ) > 0.5 ){
+		error = rotateAngle - status_acc.yaw;
 		//calculate integral
 		integral = integral + error * 0.02;
 		//calculate derivative
@@ -146,16 +147,17 @@ void rotate(double rotateAngle){
    		double resp = (error*kP + integral*kI + derivative*kD)*100;
 
 
-		FrontL.move_voltage(resp); 
+		FrontL.move_voltage((-1)*resp); 
 		MiddleL.move_voltage((-1)*resp);
 		BackL.move_voltage((-1)*resp); 
 		FrontR.move_voltage((-1)*resp);
-		MiddleR.move_voltage(resp);
-		BackR.move_voltage(resp);
+		MiddleR.move_voltage(-1)*(resp);
+		BackR.move_voltage((-1)*resp);
 
 		lastError = error;
 		pros::delay(20);
   	}
+	
 	FrontL.move_voltage(0); 
 	MiddleL.move_voltage(0);
 	BackL.move_voltage(0); 
