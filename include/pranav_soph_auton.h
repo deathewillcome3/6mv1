@@ -1,10 +1,15 @@
 #ifndef left_auton_h
 #define left_auton_h
-void left_auton();
+void left_auton_pranav();
 #endif
 
-#ifndef right_auton_h
-#define right_auton_h
+#ifndef left_auton_r
+#define left_auton_r
+void left_auton_sop();
+#endif
+
+#ifndef right_auton_i
+#define right_auton_i
 void right_auton();
 #endif
 
@@ -15,7 +20,7 @@ void neutral_auton();
 #endif
 
 #ifndef pranav_soph_auton_h
-#define pranav_soph_auton_H
+#define pranav_soph_auton_h
 void pranav_soph_auton();
 #endif
 
@@ -62,5 +67,8 @@ void armUp();
 void armDown();
 #endif
 
-
+#ifndef move_h
+#define move_h
+void move();
+#endif
 

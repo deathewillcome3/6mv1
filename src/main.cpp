@@ -153,13 +153,13 @@ void opcontrol() {
 		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
-			pistonB1.set_value(false);
-			pistonB2.set_value(false);
+			pistonB1.set_value(true);
+			pistonB2.set_value(true);
 
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
-			pistonB1.set_value(true);
-			pistonB2.set_value(true);
+			pistonB1.set_value(false);
+			pistonB2.set_value(E_MOTOR_FLAGS_ZERO_VELOCITY);
 		}
 		else{
 		}
@@ -187,7 +187,7 @@ void opcontrol() {
 			Elev.move(127);
 		}
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
-			pranav_soph_auton();
+			left_auton_sop();
 		}
 		// if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
 		// 	// autonomous5();

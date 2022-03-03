@@ -5,12 +5,19 @@
 
 
 void move_base(double left, double right){
-    BackL = -left;
+    // BackL = -left;
+    // MiddleL = -left;
+    // FrontL = -left;
+    // BackR = -right;
+    // MiddleR = -right;
+    // FrontR = -right;
+
+	BackL = -left;
     MiddleL = -left;
     FrontL = -left;
-    BackR = -right;
-    MiddleR = -right;
-    FrontR = -right;
+    BackR = right;
+    MiddleR = right;
+    FrontR = right;
 }
 
 double average_encoders(){
