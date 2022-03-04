@@ -14,7 +14,7 @@ double getTheta(double target [2]){
   // pos[1] from gps
   pos[1] = gps_heading.y;
   // h_c from gps (heading)
-  h_c = gps_heading.yaw;
+  h_c = ((gps_heading.yaw)*3.1415)/180;
   double point_vec [2] = {target[0] - pos[0], target[1] - pos[1]};
   double pv_mag = pow( pow(point_vec[0], 2) + pow(point_vec[1], 2), 0.5);
   point_vec[0] = point_vec[0] / pv_mag;
@@ -32,32 +32,32 @@ double getTheta(double target [2]){
   return turn_;
 }
 
-// std::vector<double [2]> path_extrapolation(std::vector<double [2]> path, double spacing){
-//   std::vector<double [2]> full_path;
-//   full_path.reserve(30);
-//   for(int i=0; i<path.size(); i++){
-//     if(i+1 == path.size()){
-//       full_path.push_back(path[i]);
-//     }
-//     else{
-//       double vect [2];
-//       vect[0] = path[i+1][0] - path[i][0];
-//       vect[1] = path[i+1][1] - path[i][1];
-//       double vect_mag = pow(pow(vect[0], 2) + pow(vect[1], 2), 0.5);
-//       double max_points = std::ceil(vect_mag / spacing);
-//       vect[0] = vect[0] / vect_mag;
-//       vect[1] = vect[1] / vect_mag;
-//       for (i=0; i < max_points; i++){
-//         double coord [2];
-//         coord [0] = path[i][0] + vect[0]*i;
-//         coord [1] = path[i][1] + vect[1]*i;
-//         full_path.push_back(coord);
-//       }
+std::vector<std::vector<double>> path_extrapolation(std::vector<std::vector<double>> path, double spacing){
+  std::vector<std::vector<double>> full_path;
+  full_path.reserve(30);
+  for(int i=0; i<path.size(); i++){
+    if(i+1 == path.size()){
+      full_path.push_back(path[i]);
+    }
+    else{
+      // double vect [2];
+      // vect[0] = path[i+1][0] - path[i][0];
+      // vect[1] = path[i+1][1] - path[i][1];
+      // double vect_mag = pow(pow(vect[0], 2) + pow(vect[1], 2), 0.5);
+      // double max_points = std::ceil(vect_mag / spacing);
+      // vect[0] = vect[0] / vect_mag;
+      // vect[1] = vect[1] / vect_mag;
+      // for (i=0; i < max_points; i++){
+      //   double coord [2];
+      //   coord [0] = path[i][0] + vect[0]*i;
+      //   coord [1] = path[i][1] + vect[1]*i;
+      //   full_path.push_back(coord);
+      //}
 
-//     }
-//   }
-//   return path;
-// }
+    }
+  }
+  return path;
+}
 
 pros::c::gps_status_s_t get_gps_heading(){
   // 6.5 inches from the center X Left GPS
@@ -79,20 +79,23 @@ pros::c::gps_status_s_t get_gps_heading(){
 
 void travel2point(double t_pos [2], double speed){
   //Pos is in m, heading is neg ccw, pos cw in degrees
-  double pos [2] = {0,0};
-  double x_c_pos = 0;
-  double y_c_pos = 0;
-  double h_c = 0;
   pros::c::gps_status_s_t gps_heading;
   gps_heading = gps1.get_status();
-  while (abs(x_c_pos - t_pos[0]) > 0.3 || abs(y_c_pos - t_pos[1]) > 0.3){
+  double pos [2] = {0,0};
+  double x_c_pos = gps_heading.x;
+  double y_c_pos = gps_heading.y;
+  double h_c = 0;
+
+  // pros::screen::print(TEXT_MEDIUM, 2, "heading: %3f", gps_heading.yaw);
+  //abs(x_c_pos - t_pos[0]) > 0.3 && abs(y_c_pos - t_pos[1]) > 0.3
+  while (abs(x_c_pos - t_pos[0]) > 0.05 && abs(y_c_pos - t_pos[1]) > 0.05){
     gps_heading = gps1.get_status();
     // pos[0] from gps
-    pos[0] = gps_heading.x;
+    x_c_pos = gps_heading.x;
     // pos[1] from gps
-    pos[1] = gps_heading.y;
+    y_c_pos = gps_heading.y;
     // h_c from gps (heading)
-    h_c = gps_heading.yaw;
+    h_c = ((gps_heading.yaw+90)*3.1415)/180;
     double h_vec [2] = {sin(h_c * -1), cos(h_c * -1)};
     double ortho_vec [2] = {h_vec[1], -1*h_vec[0]};
     double y_prime [2] = { t_pos[0] - x_c_pos, t_pos[1] - y_c_pos};
@@ -101,7 +104,8 @@ void travel2point(double t_pos [2], double speed){
     
     //double smaller_angle  = acos((y_prime[0]*h_vec[0] + y_prime[1]*h_vec[1])/t_dist);
     //double dist_mag = 2 * smaller_angle*r;
-    double prop_cmd [2] = { r + 0.3759/2 , r - 0.3759/2};
+    //0.3759
+    double prop_cmd [2] = { r - 0.1/2 , r + 0.1/2};
     double max_prop_mag = abs(prop_cmd[0]);
     if (abs(prop_cmd[1]) > max_prop_mag){
       max_prop_mag = abs(prop_cmd[1]);
@@ -121,9 +125,13 @@ void travel2point(double t_pos [2], double speed){
     FrontL.move_velocity((-1 * prop_cmd[0])*6); 
     MiddleL.move_velocity((-1 * prop_cmd[0])*6); 
     BackL.move_velocity((-1 * prop_cmd[0])*6); 
-    FrontR.move_velocity((prop_cmd[1])*6); 
-    MiddleR.move_velocity((prop_cmd[1])*6); 
-    BackR.move_velocity((prop_cmd[1])*6); 
+    FrontR.move_velocity((1 * prop_cmd[1])*6); 
+    MiddleR.move_velocity((1 * prop_cmd[1])*6); 
+    BackR.move_velocity((1 * prop_cmd[1])*6); 
+    // pros::screen::print(TEXT_MEDIUM, 1, "R: %3f", r);
+    // pros::screen::print(TEXT_MEDIUM, 2, "R: %3f", prop_cmd[0]);
+    // pros::screen::print(TEXT_MEDIUM, 2, "R: %3f", prop_cmd[1]);
+
   }
   FrontL.move_velocity(0); 
   MiddleL.move_velocity(0); 
@@ -132,3 +140,24 @@ void travel2point(double t_pos [2], double speed){
   MiddleR.move_velocity(0); 
   BackR.move_velocity(0); 
 }
+
+// void turn2point(double target [2]){
+//   double x_c_pos = 0;
+//   double y_c_pos = 0;
+//   pi_c t_pid;
+//   while (abs(getTheta(target) > 0.1)){
+//     double resp = t_pid.update(getTheta(target));
+//     FrontL.move_velocity(-1 * resp)*6); 
+//     MiddleL.move_velocity(-1 * resp)*6); 
+//     BackL.move_velocity(-1 * resp)*6); 
+//     FrontR.move_velocity(-1 * resp)*6); 
+//     MiddleR.move_velocity(-1 * resp)*6); 
+//     BackR.move_velocity(-1 * resp)*6); 
+//   }
+//   FrontL.move_velocity(0); 
+//   MiddleL.move_velocity(0); 
+//   BackL.move_velocity(0); 
+//   FrontR.move_velocity(0); 
+//   MiddleR.move_velocity(0); 
+//   BackR.move_velocity(0); 
+// }

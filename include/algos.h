@@ -13,7 +13,7 @@ pros::c::gps_status_s_t get_gps_heading();
 void travel2point(double t_pos [2], double speed);
 #endif
 
-// #ifndef path_extrapolation_h
-// #define path_extrapolation_h
-// std::vector<double[2]> path_extrapolation(std::vector<double[2]> path, double spacing);
-// #endif
+#ifndef path_extrapolation_h
+#define path_extrapolation_h
+std::vector<std::vector<double>> path_extrapolation(std::vector<std::vector<double>> path, double spacing);
+#endif

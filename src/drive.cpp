@@ -122,15 +122,15 @@ void rotate(double rotateAngle){
 	double integral = 0 ;
 	double derivative = 0 ;
 	double error = 0;
-	double kP=5.75;
+	double kP=4.75;
 	int iter = 0;
-	double kI = 0.5;
+	double kI = 0;
 	double kD=0.75;
 	double lastError = 0;
-	double targetAngle = status_acc.yaw + rotateAngle;
-	while( abs(status_acc.yaw- targetAngle ) > 0.5 ){
+	while( abs(status_acc.yaw- rotateAngle ) > 0.5 ){
+		iter++;
 		status_acc = gps1.get_status();
-		error = targetAngle - status_acc.yaw;
+		error = rotateAngle - status_acc.yaw;
 		//calculate integral
 		integral = integral + error * 0.02;
 		//calculate derivative
@@ -156,6 +156,10 @@ void rotate(double rotateAngle){
 
 		lastError = error;
 		pros::delay(20);
+		if(iter<50){
+			continue;
+		}
+		break;
   	}
 	
 	FrontL.move_voltage(0); 
