@@ -27,3 +27,8 @@ void translate();
 #define rotate_h
 void rotate(double rotateAngle);
 #endif
+
+#ifndef move_encoder_h
+#define move_encoder_h
+void move_encoder(double ticks);
+#endif

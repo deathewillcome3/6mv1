@@ -6,33 +6,63 @@
 
 double targetAngle;
 double targetX;
-double targetM;
+double targetP[2];
 double enablePID = true;
+bool rotateOnly=false;
 
 void daniel_auton (){
+  pros::c::gps_status_s_t status;
   Inertial.reset();
-  // FrontL.move(-63);
-  // FrontR.move(63);
-  // BackL.move(-63);
-  // BackR.move(63);
-  // pros::delay(200);
-  // FrontL.move(0);
-  // FrontR.move(0);
-  // BackL.move(0);
-  // BackR.move(0);
   reset_encoders();
-  // pros::Task billnye(pid_loop_gps);
-  // targetAngle = 0;
-  // targetM = 0;
+  status = gps1.get_status();
+  double angle [2] = {-1.079974,   -1.066786};
+  //getTheta(angle)*180
+  //getAngle(angle)
+  // pros::screen::print(TEXT_MEDIUM, 1, "targetPos: %3f",angle[0]);
+  // pros::screen::print(TEXT_MEDIUM, 2, "targetPos: %3f", angle[1]);
+  // pros::screen::print(TEXT_MEDIUM, 3, "currentX: %3f", status.x);
+  // pros::screen::print(TEXT_MEDIUM, 4, "currentY: %3f", status.y);
+  // pros::screen::print(TEXT_MEDIUM, 5, "getAngle: %3f", getAngle(angle, true));
+  // pros::screen::print(TEXT_MEDIUM, 6, "getTheta: %3f", getTheta(angle));
+  //  pros::screen::print(TEXT_MEDIUM, 7, "gps: %3f", status.yaw);
+  // rotate (getAngle(angle));
+  // pros::Task 
+
+  move_encoder(-800);
+  move_encoder(300);
+  angle [0] = -0.175305;
+  angle [1] = -1.013118;
+  targetP [0] = status.x;
+  targetP [1] = status.y;
+  targetAngle = getAngle(angle, false);
+  pros::Task billnye(pid_loop_gps);
+  // while(abs(status.yaw-getAngle(angle,true))> 5){
+  //   pros::delay(20);
+  // }
+  pros::delay(1000);
+  targetP [0] = -0.175305;
+  targetP [1] = -1.013118;
+  // pros::delay(1000);
+  // rotateOnly = true;
+  // targetP [0] = 0.7993565;
+  // targetP [1] = -0.273173;
+  // targetAngle = getAngle(targetP, true);
+  // // while(abs(status.yaw-getAngle(angle,true))> 5){
+  // //   pros::delay(20);
+  // // }
+  pros::delay(1000);
+  rotateOnly = false;
+  // pros::delay(1000);
+  // rotateOnly = true;
+  // targetP [0] = 0.9319615;
+  // targetP [1] = 1.3449086;
+  // targetAngle = getAngle(targetP, true);
+  // pros::delay(1000);
+  // rotateOnly = false;
   // targetX = 1800;
-  // pros::delay(2000);
   // double t_pos[2] = {0, 0};
   // rotate(90);
-
-  double target[2] = {0, -1};
-  pros::screen::print(TEXT_MEDIUM, 1, "Testing: %3f", getTheta(target));
-
-
+  // double target[2] = {0, -1};
   // double target[2] = { 0.7993565, -0.273173};
   // // rotate(getTheta(target));
   // travel2point(target, 100);
@@ -70,24 +100,27 @@ int pid_loop_gps (){
     double lat_kP = 1.5;
     int lat_iter = 0;
     double lat_kI = 0;
-    double lat_kD= 0;
+    double lat_kD= 0.02;
 
     double ang_integral = 0;
     double ang_deriv = 0 ;
     double ang_error = 0;
     double ang_last_error = 0;
    
-    double ang_kP = 1.5;
+    double ang_kP = 3.5;
     int ang_iter = 0;
     double ang_kI = 0;
     double ang_kD= 0;
    
    
     while(enablePID){
-      status = gps2.get_status();
-
-      lat_error= (targetM - status.x)*1000;
-
+      status = gps1.get_status();
+      if(distance(targetP)> 0.15){
+        lat_error = distance(targetP)*100;
+      }
+      else{
+        lat_error = 0;
+      }
 
       //calculate lat_integral
       lat_integral = lat_integral + lat_error * 0.02;
@@ -96,8 +129,12 @@ int pid_loop_gps (){
       // if(abs(error) == 0 ){ integral = 0; }
       // if(integral > 0.5){ integral = 0.5; }
       double lat_power = (lat_error*lat_kP + lat_integral*lat_kI + lat_integral*lat_kD);
-      
-      ang_error = targetAngle - status.yaw;
+      if(abs(targetAngle - status.yaw) > 5){
+        ang_error = targetAngle - status.yaw;
+      }
+      else{
+        ang_error = 0;
+      }
       //calculate ang_integral
       ang_integral = ang_integral + ang_error * 0.02;
       //calculate ang_derivative
@@ -105,21 +142,23 @@ int pid_loop_gps (){
       // if(abs(ang_error) == 0 ){ ang_integral = 0; }
       // if(ang_integral > 0.5){ ang_integral = 0.5; }
       double ang_power = (ang_error*ang_kP  + ang_deriv*ang_kD);
-      pros::screen::print(TEXT_MEDIUM, 2, "Angular Position: %3f", ang_error);
-      pros::screen::print(TEXT_MEDIUM, 3, "Angular Power: %3f", ang_power);
-      pros::screen::print(TEXT_MEDIUM, 1, "Lat Power: %3f", lat_power);
+      // pros::screen::print(TEXT_MEDIUM, 2, "error: %3f", lat_error);
+      // pros::screen::print(TEXT_MEDIUM, 3, "Angular Position: %3f", ang_error);
+      // pros::screen::print(TEXT_MEDIUM, 4, "Angular Power: %3f", ang_power);
+      // pros::screen::print(TEXT_MEDIUM, 5, "Lat Power: %3f", lat_power);
       
       // move_base(lat_power + ang_power, lat_power - ang_power);
 
       ang_last_error = ang_error;
       lat_last_error = lat_error;
-      ang_power = 0;
+
+      if(rotateOnly) lat_power = 0;
 
       FrontL.move(-lat_power - ang_power);
       MiddleL.move(-lat_power - ang_power);
       BackL.move(-lat_power - ang_power);
       FrontR.move(lat_power - ang_power);
-      MiddleL.move(lat_power - ang_power);
+      MiddleR.move(lat_power - ang_power);
       BackR.move(lat_power - ang_power);
       pros::delay(20);
 
@@ -168,7 +207,7 @@ int pid_loop_x (){
       // if(integral > 0.5){ integral = 0.5; }
       double lat_power = (lat_error*kP + lat_integral*kI + lat_integral*kD);
       
-      ang_error = (status.yaw+targetAngle) - status.yaw;
+      ang_error = targetAngle - status.yaw;
       //calculate ang_integral
       ang_integral = ang_integral + ang_error * 0.02;
       //calculate ang_derivative
@@ -176,8 +215,10 @@ int pid_loop_x (){
       // if(abs(ang_error) == 0 { ang_integral = 0; }
       // if(ang_integral > 0.5){ ang_integral = 0.5; }
       double ang_power = (ang_error*kP  + ang_deriv*kD);
-      pros::screen::print(TEXT_MEDIUM, 2, "Angular Position: %3f", ang_error);
-      pros::screen::print(TEXT_MEDIUM, 3, "Angular Power: %3f", ang_power);
+      pros::screen::print(TEXT_MEDIUM, 2, "error: %3f", lat_error);
+      pros::screen::print(TEXT_MEDIUM, 3, "Angular Position: %3f", ang_error);
+      pros::screen::print(TEXT_MEDIUM, 4, "Angular Power: %3f", ang_power);
+      pros::screen::print(TEXT_MEDIUM, 5, "Lat Power: %3f", lat_power);
       
       // move_base(lat_power + ang_power, lat_power - ang_power);
 

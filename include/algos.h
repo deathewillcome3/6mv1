@@ -17,3 +17,13 @@ void travel2point(double t_pos [2], double speed);
 #define path_extrapolation_h
 std::vector<std::vector<double>> path_extrapolation(std::vector<std::vector<double>> path, double spacing);
 #endif
+
+#ifndef distance_h
+#define distance_H
+double distance(<std::vector<double>);
+#endif 
+
+#ifndef getAngle_h
+#define getAngle_h
+double getAngle(double target[2], bool left);
+#endif

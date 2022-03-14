@@ -115,8 +115,6 @@ void reset_encoders(){
 
 void rotate(double rotateAngle){
 	
-	pros::c::gps_status_s_t status = get_gps_heading();
-	pros::c::gps_status_s_t status_acc = gps1.get_status();
 	// Inertial.tare_rotation();
 
 	double integral = 0 ;
@@ -127,10 +125,11 @@ void rotate(double rotateAngle){
 	double kI = 0;
 	double kD=0.75;
 	double lastError = 0;
-	while( abs(status_acc.yaw- rotateAngle ) > 0.5 ){
+	double targetAngle = rotateAngle + gps.yaw;
+	while( abs(gps.yaw- targetAngle ) > 0.5 ){
 		iter++;
 		status_acc = gps1.get_status();
-		error = rotateAngle - status_acc.yaw;
+		error = targetAngle - status_acc.yaw;
 		//calculate integral
 		integral = integral + error * 0.02;
 		//calculate derivative
@@ -147,26 +146,36 @@ void rotate(double rotateAngle){
    		double resp = (error*kP + integral*kI + derivative*kD)*100;
 
 
-		FrontL.move_voltage((-1)*resp); 
-		MiddleL.move_voltage((-1)*resp);
-		BackL.move_voltage((-1)*resp); 
-		FrontR.move_voltage((-1)*resp);
-		MiddleR.move_voltage(-1)*(resp);
-		BackR.move_voltage((-1)*resp);
-
-		lastError = error;
-		pros::delay(20);
-		if(iter<50){
-			continue;
-		}
-		break;
+		FrontL.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
+		MiddleL.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
+		BackL.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
+		FrontR.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
+		MiddleR.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
+		BackR.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
   	}
 	
-	FrontL.move_voltage(0); 
-	MiddleL.move_voltage(0);
-	BackL.move_voltage(0); 
-	FrontR.move_voltage(0);
-	MiddleR.move_voltage(0);
-	BackR.move_voltage(0);
+	FrontL.spin(0); 
+	MiddleL.spin(0);
+	BackL.spin(0); 
+	FrontR.spin(0);
+	MiddleR.spin(0);
+	BackR.spin(0);
 }
 
+void move_encoder(double ticks){
+  BackL.move_relative(-ticks, 100);
+  MiddleL.move_relative(-ticks, 100);
+  FrontR.move_relative(-ticks, 100);
+  BackR.move_relative(ticks, 100);
+  MiddleR.move_relative(ticks, 100);
+  FrontR.move_relative(ticks, 100);
+  while(average_encoders()<ticks){
+    pros::delay(2);
+  }
+  FrontL.move_voltage(0); 
+  MiddleL.move_voltage(0);
+  BackL.move_voltage(0); 
+  FrontR.move_voltage(0);
+  MiddleR.move_voltage(0);
+  BackR.move_voltage(0);
+}

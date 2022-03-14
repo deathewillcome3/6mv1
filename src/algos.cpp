@@ -40,19 +40,19 @@ std::vector<std::vector<double>> path_extrapolation(std::vector<std::vector<doub
       full_path.push_back(path[i]);
     }
     else{
-      // double vect [2];
-      // vect[0] = path[i+1][0] - path[i][0];
-      // vect[1] = path[i+1][1] - path[i][1];
-      // double vect_mag = pow(pow(vect[0], 2) + pow(vect[1], 2), 0.5);
-      // double max_points = std::ceil(vect_mag / spacing);
-      // vect[0] = vect[0] / vect_mag;
-      // vect[1] = vect[1] / vect_mag;
-      // for (i=0; i < max_points; i++){
-      //   double coord [2];
-      //   coord [0] = path[i][0] + vect[0]*i;
-      //   coord [1] = path[i][1] + vect[1]*i;
-      //   full_path.push_back(coord);
-      //}
+      std::vector<double> vect;
+      vect[0] = path[i+1][0] - path[i][0];
+      vect[1] = path[i+1][1] - path[i][1];
+      double vect_mag = pow(pow(vect[0], 2) + pow(vect[1], 2), 0.5);
+      double max_points = std::ceil(vect_mag / spacing);
+      vect[0] = vect[0] / vect_mag;
+      vect[1] = vect[1] / vect_mag;
+      for (i=0; i < max_points; i++){
+        std::vector<double> coord;
+        coord [0] = path[i][0] + vect[0]*i;
+        coord [1] = path[i][1] + vect[1]*i;
+        full_path.push_back(coord);
+      }
 
     }
   }
@@ -161,3 +161,49 @@ void travel2point(double t_pos [2], double speed){
 //   MiddleR.move_velocity(0); 
 //   BackR.move_velocity(0); 
 // }
+
+double distance (std::vector<double>){
+  pros::c::gps_status_s_t status;
+  status = gps1.get_status();
+  double dist = pow( pow(target[0]-status.x, 2) + pow(target[1]-status.y, 2), 0.5);
+  return dist;
+}
+
+double getAngle(double target [2], bool left){
+  pros::c::gps_status_s_t status;
+  status = gps1.get_status();
+  double distancex, distancey;
+  if (status.y > 0 && target[1] > 0){
+    distancey= abs(status.y-target[1]);
+  }
+  if (status.y < 0 && target[1] < 0 ){
+    distancey = abs(abs(status.y) - abs(target[1]));
+  }
+  if (status.y > 0 && target[1] < 0){
+    distancey = status.y-target[1];
+  }
+   if (status.y < 0 && target[1] > 0){
+    distancey = target[1]-status.y;
+  }
+
+  if (status.x > 0 && target[0] > 0){
+    distancex= abs(status.x-target[0]);
+  }
+  if (status.x < 0 && target[0] < 0 ){
+    distancex = abs(abs(status.x) - abs(target[0]));
+  }
+  if (status.x > 0 && target[0] < 0){
+    distancex = status.x-target[0];
+  }
+   if (status.x < 0 && target[0] > 0){
+    distancex = target[0]-status.x;
+  }
+  
+  double angle = (atan2(distancey, distancex))/3.1415926 * 180;
+
+   if (left == true){
+     angle = angle*-1;
+  }
+  return angle;
+
+}
