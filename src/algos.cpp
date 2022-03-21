@@ -162,14 +162,38 @@ void travel2point(double t_pos [2], double speed){
 //   BackR.move_velocity(0); 
 // }
 
-double distance (std::vector<double>){
+// Returns a distance based on the current robot position
+double current_distance(std::vector<double> target){
   pros::c::gps_status_s_t status;
   status = gps1.get_status();
-  double dist = pow( pow(target[0]-status.x, 2) + pow(target[1]-status.y, 2), 0.5);
-  return dist;
+  return pow( pow(target[0]-status.x, 2) + pow(target[1]-status.y, 2), 0.5);
 }
 
-double getAngle(double target [2], bool left){
+//Returns a distance based on two points
+double distance(std::vector<std::vector<double>> points){
+  return pow( pow(points[0][0]-points[1][0], 2) + pow(points[0][1]-points[1][1], 2), 0.5);
+}
+
+//Returns the arc length of three intersecting points
+double curvature(std::vector<std::vector<double>> points){
+  double x1 = points[0][0] + 0.001;
+  double y1 = points[0][1];
+  double x2 = points[1][0];
+  double y2 = points[1][1];
+  double x3 = points[2][0];
+  double y3 = points[2][1];
+  double k1 = 0.5 * (pow(points[0][0], 2) + pow(points[0][1], 2) - pow(points[1][0], 2) - pow(points[1][1],2)) /
+    (points[0][0]-points[1][0]);
+  double k2 = (y1-y2) / (x1-x2);
+  double b = 0.5 * (pow(x2, 2) - 2*x2*k1 + pow(y2,2) - pow(x3,2) + 2*x3*k1 - pow(y3, 2)) / 
+    (x3*k2 - y3 + y2 - x2*k2);
+  double a = k1 - k2*b;
+  // double r = pow((pow(x1-a, 2) + pow(y1-b,2), 0.5));
+  return 1/a;
+}
+
+
+double get_angle(std::vector<double> target, bool left){
   pros::c::gps_status_s_t status;
   status = gps1.get_status();
   double distancex, distancey;

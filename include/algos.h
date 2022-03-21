@@ -18,12 +18,22 @@ void travel2point(double t_pos [2], double speed);
 std::vector<std::vector<double>> path_extrapolation(std::vector<std::vector<double>> path, double spacing);
 #endif
 
-#ifndef distance_h
-#define distance_H
-double distance(<std::vector<double>);
+#ifndef current_distance_h
+#define current_distance_h
+double current_distance(std::vector<double> target);
 #endif 
+
+#ifndef distance_h
+#define distance_h
+double distance(std::vector<std::vector<double>> points);
+#endif
+
+#ifndef curvature_h
+#define curvature_h
+double curvature(std::vector<std::vector<double>> points);
+#endif
 
 #ifndef getAngle_h
 #define getAngle_h
-double getAngle(double target[2], bool left);
+double get_angle(std::vector<double> target, bool left);
 #endif

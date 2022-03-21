@@ -24,6 +24,11 @@ int pid_loop_y();
 void turn2point(double target [2]);
 #endif
 
+#ifndef pid_move_point_h
+#define pid_move_point_h
+void pid_move_point(std::vector<double> target, double delay);
+#endif
+
 // FrontL               motor         8               
 // FrontR               motor         6               
 // BackL                motor         4               

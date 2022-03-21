@@ -19,6 +19,8 @@ extern pros::Gps gps1;
 extern pros::Gps gps2;
 extern pros::Imu Inertial;
 
+extern pros::Motor Left, Right;
+
 extern int autonomousPreSet;
 
 #endif

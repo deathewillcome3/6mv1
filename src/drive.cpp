@@ -125,11 +125,13 @@ void rotate(double rotateAngle){
 	double kI = 0;
 	double kD=0.75;
 	double lastError = 0;
-	double targetAngle = rotateAngle + gps.yaw;
-	while( abs(gps.yaw- targetAngle ) > 0.5 ){
+	pros::c::gps_status_s_t status;
+  	status = gps1.get_status();
+	double targetAngle = rotateAngle + status.yaw;
+	while( abs(status.yaw- targetAngle ) > 0.5 ){
 		iter++;
-		status_acc = gps1.get_status();
-		error = targetAngle - status_acc.yaw;
+		status = gps1.get_status();
+		error = targetAngle - status.yaw;
 		//calculate integral
 		integral = integral + error * 0.02;
 		//calculate derivative
@@ -146,20 +148,20 @@ void rotate(double rotateAngle){
    		double resp = (error*kP + integral*kI + derivative*kD)*100;
 
 
-		FrontL.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
-		MiddleL.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
-		BackL.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
-		FrontR.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
-		MiddleR.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
-		BackR.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
+		// FrontL.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
+		// MiddleL.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
+		// BackL.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
+		// FrontR.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
+		// MiddleR.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
+		// BackR.spin(fwd, (-1)*resp, voltageUnits::millivolts); 
   	}
 	
-	FrontL.spin(0); 
-	MiddleL.spin(0);
-	BackL.spin(0); 
-	FrontR.spin(0);
-	MiddleR.spin(0);
-	BackR.spin(0);
+	// FrontL.spin(0); 
+	// MiddleL.spin(0);
+	// BackL.spin(0); 
+	// FrontR.spin(0);
+	// MiddleR.spin(0);
+	// BackR.spin(0);
 }
 
 void move_encoder(double ticks){

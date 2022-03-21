@@ -4,9 +4,9 @@
 #include "algos.h"
 #include "globals.h"
 
-double targetAngle;
+double target_angle;
 double targetX;
-double targetP[2];
+std::vector<double> targetP;
 double enablePID = true;
 bool rotateOnly=false;
 
@@ -17,46 +17,50 @@ void daniel_auton (){
   status = gps1.get_status();
   double angle [2] = {-1.079974,   -1.066786};
   //getTheta(angle)*180
-  //getAngle(angle)
+  //get_angle(angle)
   // pros::screen::print(TEXT_MEDIUM, 1, "targetPos: %3f",angle[0]);
   // pros::screen::print(TEXT_MEDIUM, 2, "targetPos: %3f", angle[1]);
   // pros::screen::print(TEXT_MEDIUM, 3, "currentX: %3f", status.x);
   // pros::screen::print(TEXT_MEDIUM, 4, "currentY: %3f", status.y);
-  // pros::screen::print(TEXT_MEDIUM, 5, "getAngle: %3f", getAngle(angle, true));
+  // pros::screen::print(TEXT_MEDIUM, 5, "get_angle: %3f", get_angle(angle, true));
   // pros::screen::print(TEXT_MEDIUM, 6, "getTheta: %3f", getTheta(angle));
   //  pros::screen::print(TEXT_MEDIUM, 7, "gps: %3f", status.yaw);
-  // rotate (getAngle(angle));
+  // rotate (get_angle(angle));
   // pros::Task 
 
+  //Gets out of intial deadzone
   move_encoder(-800);
   move_encoder(300);
-  angle [0] = -0.175305;
-  angle [1] = -1.013118;
-  targetP [0] = status.x;
-  targetP [1] = status.y;
-  targetAngle = getAngle(angle, false);
+  
+  //Defines point and rotates to defined point
+  targetP [0] = -0.175305;
+  targetP [1] = -1.013118;
+  rotateOnly = true;
+  target_angle = get_angle(target, false);
   pros::Task billnye(pid_loop_gps);
-  // while(abs(status.yaw-getAngle(angle,true))> 5){
+  // while(abs(status.yaw-get_angle(angle,true))> 5){
   //   pros::delay(20);
   // }
   pros::delay(1000);
-  targetP [0] = -0.175305;
-  targetP [1] = -1.013118;
-  // pros::delay(1000);
-  // rotateOnly = true;
-  // targetP [0] = 0.7993565;
-  // targetP [1] = -0.273173;
-  // targetAngle = getAngle(targetP, true);
-  // // while(abs(status.yaw-getAngle(angle,true))> 5){
-  // //   pros::delay(20);
-  // // }
+  //Moves to defined point
+  rotateOnly = false;
+  pros::delay(1000);
+
+  //Point 2 Same code 
+  rotateOnly = true;
+  targetP [0] = 0.7993565;
+  targetP [1] = -0.273173;
+  target_angle = get_angle(target, true);
+  // while(abs(status.yaw-get_angle(angle,true))> 5){
+  //   pros::delay(20);
+  // }
   pros::delay(1000);
   rotateOnly = false;
   // pros::delay(1000);
   // rotateOnly = true;
   // targetP [0] = 0.9319615;
   // targetP [1] = 1.3449086;
-  // targetAngle = getAngle(targetP, true);
+  // target_angle = get_angle(targetP, true);
   // pros::delay(1000);
   // rotateOnly = false;
   // targetX = 1800;
@@ -89,6 +93,18 @@ void daniel_auton (){
   // travel2point(target, 80);
 }
 
+void pid_move_point(std::vector<double> target, double delay){
+  rotateOnly = true;
+  target_angle = get_angle(target, false);
+  pros::Task billnye(pid_loop_gps);
+  // while(abs(status.yaw-get_angle(angle,true))> 5){
+  //   pros::delay(20);
+  // }
+  pros::delay(1000);
+  rotateOnly = false;
+  pros::delay(delay);
+}
+
 int pid_loop_gps (){
     pros::c::gps_status_s_t status;
 
@@ -115,8 +131,8 @@ int pid_loop_gps (){
    
     while(enablePID){
       status = gps1.get_status();
-      if(distance(targetP)> 0.15){
-        lat_error = distance(targetP)*100;
+      if(current_distance(targetP)> 0.15){
+        lat_error = current_distance(targetP)*100;
       }
       else{
         lat_error = 0;
@@ -129,8 +145,8 @@ int pid_loop_gps (){
       // if(abs(error) == 0 ){ integral = 0; }
       // if(integral > 0.5){ integral = 0.5; }
       double lat_power = (lat_error*lat_kP + lat_integral*lat_kI + lat_integral*lat_kD);
-      if(abs(targetAngle - status.yaw) > 5){
-        ang_error = targetAngle - status.yaw;
+      if(abs(target_angle - Inertial.get_heading()) > 5){
+        ang_error = target_angle - Inertial.get_heading();
       }
       else{
         ang_error = 0;
@@ -207,7 +223,7 @@ int pid_loop_x (){
       // if(integral > 0.5){ integral = 0.5; }
       double lat_power = (lat_error*kP + lat_integral*kI + lat_integral*kD);
       
-      ang_error = targetAngle - status.yaw;
+      ang_error = target_angle - status.yaw;
       //calculate ang_integral
       ang_integral = ang_integral + ang_error * 0.02;
       //calculate ang_derivative

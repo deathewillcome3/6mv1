@@ -4,18 +4,30 @@
 #include "algos.h"
 #include "globals.h"
 
+// pid_turnR(int deg);
+
 //amt of time it takes to move 1 tile (not correct right now)
 double unit = 0.505;
 double arm_degrees = 1;
 
 //I think this is gonna be a left auton
-void pranav_soph_auton (){
-    move_base(-100,100);
-    pros::delay(1);
-    clampB;
-    move_base(100,100);
-    pros::delay(1);
+void pranav_soph_auton (){ // Ray's random garbage now (PID turns on the tank)
+    // Inertial.callibrate();
+    double setpoint = Inertial.get_heading()+90;
+    double error;
+    // double kP = 0.1;
+    double power;
 
+    while(setpoint-Inertial.get_heading() > 0) {
+        error = setpoint-Inertial.get_heading();
+        power = error;  
+        Left.move_voltage(power);
+        Right.move_voltage(power);
+        // pros::delay(20);
+    }
+    Left.move_voltage(0);
+    Right.move_voltage(0);
+}
 
  //move_forward(1);
 
@@ -23,7 +35,7 @@ void pranav_soph_auton (){
     
     //left_auton_sop();
 
-}
+
 
 
 /*
