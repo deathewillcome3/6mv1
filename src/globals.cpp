@@ -9,14 +9,22 @@ pros::Motor MiddleL (6, pros ::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_
 pros::Motor FrontL (5, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor Arm1 (7, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor Elev (9, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Gps gps1(19, -1.5206, -1.292, 135, -0.0508, 0.17272);
+
+pros::Motor Left(5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor Right(14, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Gps gps1(10);
+pros::Gps gps2(19);
+pros::Imu Inertial(2);
+
+// pros::Gps gps1(19, -1.5206, -1.292, 135, -0.0508, 0.17272);
 // 2 X position from center
 // 6.8 Y position from center 
-pros::Gps gps2(20, 0.1905, -0.1397);
+// pros::Gps gps2(20, 0.1905, -0.1397);
 //9.5 inches is hypotenuse of the triangle
 //-7.75 X position from center
 //5.5 Y position from center
-pros::Imu Inertial(15);
+
+// pros::Imu Inertial(15);
 pros::ADIDigitalOut pistonF('A');
 pros::ADIDigitalOut pistonB1('B');
 pros::ADIDigitalOut pistonB2('C');
